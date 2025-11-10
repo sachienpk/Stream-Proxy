@@ -14,7 +14,7 @@ echo 'user = sastro.u.03@gmail.com' >> /config/rclone.conf && \
 echo 'pass = D3dODTYFeAdveKS_7SzKR52wc-brz_yccIaJtg' >> /config/rclone.conf && \
 export RCLONE_CONFIG=/config/rclone.conf && \
 echo '===== Starting MEGA Proxy =====' && \
-rclone serve http mega: --addr :8080 --vfs-cache-mode minimal --vfs-read-chunk-size 32M --vfs-read-chunk-size-limit 2G --config /config/rclone.conf || \
+rclone serve http mega: --addr :8080 --vfs-cache-mode full --vfs-read-chunk-size 32M --vfs-read-chunk-size-limit 400M --config /config/rclone.conf || \
 (echo '<html><body><h1>MEGA Proxy Failed</h1><p>Check rclone configuration.</p></body></html>' > /app/fail.html && python3 -m http.server 8080 --bind 0.0.0.0 --directory /app) \
 "]
 
