@@ -8,5 +8,4 @@ WORKDIR /app
 EXPOSE 8080
 
 # Start rclone HTTP server on MEGA remote
-CMD ["rclone", "serve", "http", "mega:", "--addr", ":8080", "--vfs-cache-mode", "full"]
-
+CMD ["rclone serve http mega: --addr :8080 --vfs-cache-mode full"]
