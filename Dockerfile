@@ -1,4 +1,3 @@
-# Base image
 FROM alpine:latest
 WORKDIR /app
 EXPOSE 8080
@@ -11,14 +10,11 @@ ENV RCLONE_CONFIG=/config/rclone.conf
 
 # CMD with fallback page if rclone fails
 CMD bash -c '
-# Create rclone config
 mkdir -p /config
-cat <<EOF >/config/rclone.conf
-[mega]
-type = mega
-user = sastro.u.03@gmail.com
-pass = D3dODTYFeAdveKS_7SzKR52wc-brz_yccIaJtg
-EOF
+echo "[mega]" > /config/rclone.conf
+echo "type = mega" >> /config/rclone.conf
+echo "user = sastro.u.03@gmail.com" >> /config/rclone.conf
+echo "pass = D3dODTYFeAdveKS_7SzKR52wc-brz_yccIaJtg" >> /config/rclone.conf
 
 echo "===== Starting MEGA Proxy ====="
 
