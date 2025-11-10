@@ -17,3 +17,5 @@ echo '===== Starting MEGA Proxy =====' && \
 rclone serve http mega: --addr :8080 --vfs-cache-mode minimal --vfs-read-chunk-size 32M --vfs-read-chunk-size-limit 2G --config /config/rclone.conf || \
 (echo '<html><body><h1>MEGA Proxy Failed</h1><p>Check rclone configuration.</p></body></html>' > /app/fail.html && python3 -m http.server 8080 --bind 0.0.0.0 --directory /app) \
 "]
+
+#It Buffers (like alot)
