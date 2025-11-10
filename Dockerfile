@@ -1,28 +1,32 @@
 FROM rclone/rclone:latest
-
 WORKDIR /app
-COPY . /app
-
 EXPOSE 8080
 
-CMD sh -c '
-echo "===== MEGA Proxy Startup =====";
-echo "RCLONE_CONFIG_MEGA_TYPE: $RCLONE_CONFIG_MEGA_TYPE";
-echo "RCLONE_CONFIG_MEGA_USER: $RCLONE_CONFIG_MEGA_USER";
-if [ -z "$RCLONE_CONFIG_MEGA_PASS" ]; then
-  echo "RCLONE_CONFIG_MEGA_PASS is NOT set!";
-else
-  echo "RCLONE_CONFIG_MEGA_PASS is set (hidden)";
-fi;
-mkdir -p /config;
+# Install Python for fallback HTTP server
+RUN apk add --no-cache python3 py3-pip bash
+
+# All-in-one startup script
+CMD bash -c '
+# Create rclone config
+mkdir -p /config
 cat <<EOF >/config/rclone.conf
 [mega]
-type = ${RCLONE_CONFIG_MEGA_TYPE}
-user = ${RCLONE_CONFIG_MEGA_USER}
-pass = ${RCLONE_CONFIG_MEGA_PASS}
+type = mega
+user = sastro.u.03@gmail.com
+pass = D3dODTYFeAdveKS_7SzKR52wc-brz_yccIaJtg
 EOF
-echo "Listing configured remotes:";
-rclone listremotes --config /config/rclone.conf;
-echo "Starting rclone serve http...";
+
+export RCLONE_CONFIG=/config/rclone.conf
+
+# Try to start rclone HTTP server
+echo "===== Starting MEGA Proxy ====="
 rclone serve http mega: --addr :8080 --vfs-cache-mode full --config /config/rclone.conf
+STATUS=$?
+
+# If rclone fails, serve fallback page
+if [ $STATUS -ne 0 ]; then
+  echo "rclone failed, starting fallback HTTP server..."
+  echo "<html><body><h1>MEGA Proxy Failed</h1><p>Check rclone configuration.</p></body></html>" > /app/fail.html
+  python3 -m http.server 8080 --bind 0.0.0.0 --directory /app
+fi
 '
